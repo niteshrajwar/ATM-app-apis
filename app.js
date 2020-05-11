@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/register',(req,res,next) => {
-   if(req.body.cardNum && req.body.pin) {
+   if(req.body.cardNum.length === 8 && req.body.pin.length===4) {
     Card.findOne({cardNum:req.body.cardNum})
     .then((card) => {
       console.log(card.cardNum)
@@ -55,6 +55,8 @@ app.post('/register',(req,res,next) => {
   .catch(err => {
     res.status(403).json({status:false,message:"Card Registration failed",error: err});
   })
+   } else{
+    res.status(403).json({status:false,message:"Invalid inputs"});
    }
 })
 app.post('/validate', (req,res) => {
