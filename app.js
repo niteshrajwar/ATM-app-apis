@@ -43,7 +43,8 @@ app.post('/register',(req,res,next) => {
         .then(hash => {
           const newCard = new Card({
             cardNum:req.body.cardNum,
-            pin:hash
+            pin:hash,
+            amount:0
           })
           return  newCard.save(); 
         })
@@ -70,8 +71,7 @@ app.post('/validate', (req,res) => {
               message: "No card found with this crendential"
           });
       }
-      card =response;
-     
+        
       return bcrypt.compare(req.body.pin, response.pin);
   })
       .then(result => {
@@ -97,10 +97,14 @@ app.post('/validate', (req,res) => {
       })
 })
 app.post('/deposit',(req,res) =>{
-
+  
 })
 app.post('/withdraw',(req,res) =>{
-
+  req.body.amount = Number(req.body.amount)
+  if(req.body.amount>20000) {
+  return res.status(403).json({status:false,message:"Limit exceeded"})
+  } 
+ 
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
